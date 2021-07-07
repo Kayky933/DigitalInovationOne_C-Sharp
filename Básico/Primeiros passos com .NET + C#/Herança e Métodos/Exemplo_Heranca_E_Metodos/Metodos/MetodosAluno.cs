@@ -37,8 +37,6 @@ namespace Exemplo_Heranca_E_Metodos.Metodos
             ListAl.Add(al);
             double media = CalcMedia(al.Nota1, al.Nota2, al.Nota3);
 
-            al.ExibirDadosAluno(media);
-
             foreach (AlunoModel alunos in ListAl)
             {
                 Console.Clear();

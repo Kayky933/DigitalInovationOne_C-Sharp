@@ -1,9 +1,11 @@
 using Projeto_MVC_Curso.Models.Enum;
 using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Projeto_MVC.Models
 {
+    [Table("Enderecos")]
     public class EnderecoModel
     {
         [Key]

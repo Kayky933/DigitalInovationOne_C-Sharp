@@ -28,8 +28,10 @@ namespace Projeto_MVC.Models
         [DataType(DataType.Date)]
         public DateTime DataNascimento { get; set; }
 
+        [ForeignKey("Endereco")]
+        public Guid Enredeco_Id { get; set; }
         [ScaffoldColumn(false)]
-        public UsuarioEnderecoModel Endereco { get; set; }
+        public EnderecoModel Endereco { get; set; }
 
     }
 }

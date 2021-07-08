@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Projeto_MVC.Data;
 
 namespace Projeto_MVC.Migrations
 {
     [DbContext(typeof(Projeto_MVCContext))]
-    partial class Projeto_MVCContextModelSnapshot : ModelSnapshot
+    [Migration("20210707234752_ajustesDb")]
+    partial class ajustesDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

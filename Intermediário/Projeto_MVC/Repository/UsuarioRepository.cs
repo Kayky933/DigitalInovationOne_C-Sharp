@@ -1,6 +1,7 @@
 ﻿using Projeto_MVC.Data;
 using Projeto_MVC.Interfaces.Repository;
 using Projeto_MVC.Models;
+using Projeto_MVC.ViewModel;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +15,7 @@ namespace Projeto_MVC.Repository
             _context = context;
         }
 
-        public void Create(UsuarioModel Model)
+        public void Create(UsuarioViewModel model)
         {
             throw new NotImplementedException();
         }
@@ -24,27 +25,27 @@ namespace Projeto_MVC.Repository
             throw new NotImplementedException();
         }
 
-        public ICollection<UsuarioModel> GetAll(Guid Id)
+        public ICollection<UsuarioModel> GetAll(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public UsuarioModel GetByEmail(string Email)
+        public UsuarioModel GetByEmail(string email)
         {
             throw new NotImplementedException();
         }
 
-        public UsuarioModel GetById(Guid Id)
+        public UsuarioModel GetById(Guid id)
         {
             throw new NotImplementedException();
         }
 
-        public ICollection<UsuarioModel> GetByName(string Name)
+        public ICollection<UsuarioModel> GetByName(string name)
         {
             throw new NotImplementedException();
         }
 
-        public void Put(UsuarioModel Model)
+        public void Put(Guid id, UsuarioViewModel model)
         {
             throw new NotImplementedException();
         }

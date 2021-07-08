@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Projeto_MVC.ViewModel;
 
 namespace Projeto_MVC.Data
 {
@@ -10,6 +11,7 @@ namespace Projeto_MVC.Data
         }
 
         public DbSet<Projeto_MVC.Models.UsuarioModel> Usuario { get; set; }
-        public DbSet<Projeto_MVC.Models.UsuarioEnderecoModel> UsuarioEndereco { get; set; }
+        public DbSet<Projeto_MVC.Models.EnderecoModel> Endereco { get; set; }
+        public DbSet<Projeto_MVC.ViewModel.UsuarioViewModel> UsuarioViewModel { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Projeto_MVC.Interfaces.Service;
-using Projeto_MVC.Models;
+using Projeto_MVC.ViewModel;
 using System;
 using System.Threading.Tasks;
 
@@ -22,14 +22,10 @@ namespace Projeto_MVC.Controllers
         }
 
         // GET: Usuario/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var usuarioModel = await _context.GetById(ViewBag.usuarioId);
+            var usuarioModel = _context.GetById(id);
             if (usuarioModel == null)
             {
                 return NotFound();
@@ -39,7 +35,7 @@ namespace Projeto_MVC.Controllers
         }
 
         // GET: Usuario/Create
-        public IActionResult Create()
+        public IActionResult CreateUsuarioFull()
         {
             return View();
         }
@@ -49,12 +45,9 @@ namespace Projeto_MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(UsuarioModel usuarioModel)
+        public IActionResult CreateUsuarioFull(UsuarioViewModel usuarioModel)
         {
-            if (!ModelState.IsValid)
-            {
-                return null;
-            }
+
             _context.Create(usuarioModel);
             return View(usuarioModel);
         }
@@ -63,10 +56,7 @@ namespace Projeto_MVC.Controllers
         public IActionResult Edit(Guid id)
         {
             var usuarioid = _context.GetById(id);
-            if (usuarioid == null)
-            {
-                return NotFound();
-            }
+
 
             return View(usuarioid);
         }
@@ -76,13 +66,10 @@ namespace Projeto_MVC.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(Guid id, UsuarioModel usuarioModel)
+        public IActionResult Edit(Guid id, UsuarioViewModel usuarioModel)
         {
-            if (id != usuarioModel.Id)
-            {
-                return NotFound();
-            }
-            _context.Put(usuarioModel);
+
+            _context.Put(id, usuarioModel);
             return View(usuarioModel);
         }
 
@@ -90,10 +77,7 @@ namespace Projeto_MVC.Controllers
         public IActionResult Delete(Guid id)
         {
             var usuarioid = _context.GetById(id);
-            if (usuarioid == null)
-            {
-                return NotFound();
-            }
+
 
             return View(usuarioid);
         }

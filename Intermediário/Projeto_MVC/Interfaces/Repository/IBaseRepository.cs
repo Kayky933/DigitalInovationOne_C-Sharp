@@ -5,13 +5,12 @@ namespace Projeto_MVC.Interfaces.Repository
 {
     public interface IBaseRepository<T> where T : class
     {
-        public T GetById(Guid Id);
-        public ICollection<T> GetAll(Guid Id);
-        public ICollection<T> GetByName(string Name);
-        public T GetByEmail(string Email);
+        public T GetById(Guid id);
+        public ICollection<T> GetAll(Guid id);
+        public ICollection<T> GetByName(string name);
+        public T GetByEmail(string email);
 
-        public void Create(T Model);
-        public void Put(T Model);
+      
         public bool Delet(Guid id);
     }
 }

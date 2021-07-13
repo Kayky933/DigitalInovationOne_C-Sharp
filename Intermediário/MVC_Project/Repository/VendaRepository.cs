@@ -1,4 +1,5 @@
-﻿using MVC_Project.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using MVC_Project.Data;
 using MVC_Project.Interfaces.Repository;
 using MVC_Project.Models;
 using System;
@@ -18,32 +19,33 @@ namespace MVC_Project.Repository
         public void Create(VendaModel model)
         {
             _context.Vendas.Add(model);
-            SaveChanges();
+            SaveChangesVenda();
         }
 
         public void Delet(VendaModel model)
         {
             _context.Vendas.Remove(model);
-            SaveChanges();
+            SaveChangesVenda();
         }
 
         public ICollection<VendaModel> GetAll()
         {
-            return _context.Vendas.ToList();
+            return _context.Vendas.Include(v => v.Produto).ToList();
         }
-        public void SaveChanges()
-        {
-            _context.SaveChanges();
-        }
-
         public VendaModel GetOne(Guid codigo)
         {
-            return _context.Vendas.Find(codigo);
+            return _context.Vendas.Include(v => v.Produto).FirstOrDefault(m => m.Codigo == codigo);
         }
 
         public void Update(VendaModel model)
         {
-            throw new NotImplementedException();
+            _context.Vendas.Update(model);
+            SaveChangesVenda();
         }
+        public void SaveChangesVenda()
+        {
+            _context.SaveChanges();
+        }
+
     }
 }

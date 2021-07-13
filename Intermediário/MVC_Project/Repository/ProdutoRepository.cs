@@ -17,13 +17,13 @@ namespace MVC_Project.Repository
         public void Create(ProdutoModel model)
         {
             _context.Produtos.Add(model);
-            SaveChanges();
+            SaveChangesProduto();
         }
 
         public void Delet(ProdutoModel model)
         {
             _context.Produtos.Remove(model);
-            SaveChanges();
+            SaveChangesProduto();
         }
 
         public ICollection<ProdutoModel> GetAll()
@@ -34,10 +34,10 @@ namespace MVC_Project.Repository
         public void Update(ProdutoModel model)
         {
             _context.Produtos.Update(model);
-            SaveChanges();
+            SaveChangesProduto();
 
         }
-        public void SaveChanges()
+        public void SaveChangesProduto()
         {
             _context.SaveChanges();
         }

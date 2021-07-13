@@ -9,6 +9,7 @@ namespace MVC_Project.Data
         {
         }
 
+
         public DbSet<MVC_Project.Models.VendaModel> Vendas { get; set; }
         public DbSet<MVC_Project.Models.ProdutoModel> Produtos { get; set; }
     }

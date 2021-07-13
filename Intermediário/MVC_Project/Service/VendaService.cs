@@ -41,11 +41,21 @@ namespace MVC_Project.Service
             var res = _repository.GetOne(id);
             if (res != null)
             {
-                _repository.Update(model);
+                var convertedClass = ClassConverter(model);
+
+                _repository.Update(convertedClass);
                 return res;
             }
             return null;
 
+        }
+        private VendaModel ClassConverter(VendaModel vend)
+        {
+            var venda = _repository.GetOne(vend.Codigo);
+            venda.Codigo_Produto = vend.Codigo_Produto;
+            venda.Produto = vend.Produto;
+            venda.Quantidade = vend.Quantidade;
+            return venda;
         }
     }
 }

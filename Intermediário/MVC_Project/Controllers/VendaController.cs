@@ -1,53 +1,46 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using MVC_Project.Data;
+using MVC_Project.Interfaces.Service;
 using MVC_Project.Models;
 using System;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace MVC_Project.Controllers
 {
     public class VendaController : Controller
     {
-        private readonly MVC_ProjectContext _context;
+        private readonly IVendaService _context;
+        private readonly IProdutoService _contextProd;
+        private readonly MVC_ProjectContext _contextProject;
 
-        public VendaController(MVC_ProjectContext context)
+        public VendaController(IVendaService context, IProdutoService contextProd, MVC_ProjectContext contextProject)
         {
             _context = context;
+            _contextProject = contextProject;
+            _contextProd = contextProd;
         }
 
         // GET: Venda
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            var mVC_ProjectContext = _context.Vendas.Include(v => v.Produto);
-            return View(await mVC_ProjectContext.ToListAsync());
+            return View(_context.GetAll());
         }
 
         // GET: Venda/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public IActionResult Details(Guid id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            var res = _context.GetOne(id);
+            if (res != null)
+                return View(res);
 
-            var vendaModel = await _context.Vendas
-                .Include(v => v.Produto)
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(vendaModel);
+            return NotFound();
         }
 
         // GET: Venda/Create
         public IActionResult Create()
         {
-            ViewData["Codigo_Produto"] = new SelectList(_context.Produtos, "Codigo", "Descricao");
+            var res = _contextProd.GetAll();
+            ViewData["Codigo_Produto"] = new SelectList(res, "Codigo", "Descricao");
             return View();
         }
 
@@ -56,34 +49,28 @@ namespace MVC_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(VendaModel vendaModel)
+        public IActionResult Create(VendaModel vendaModel)
         {
             if (ModelState.IsValid)
             {
-                vendaModel.Codigo = Guid.NewGuid();
-                _context.Add(vendaModel);
-                await _context.SaveChangesAsync();
+                _context.Create(vendaModel);
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["Codigo_Produto"] = new SelectList(_context.Produtos, "Codigo", "Descricao", vendaModel.Codigo_Produto);
+            var res = _contextProd.GetAll();
+            ViewData["Codigo_Produto"] = new SelectList(res, "Codigo", "Descricao", vendaModel.Codigo_Produto);
             return View(vendaModel);
         }
 
         // GET: Venda/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public IActionResult Edit(Guid id)
         {
-            if (id == null)
-            {
+            var res = _context.GetOne(id);
+            if (res == null)
                 return NotFound();
-            }
 
-            var vendaModel = await _context.Vendas.FindAsync(id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
-            ViewData["Codigo_Produto"] = new SelectList(_context.Produtos, "Codigo", "Descricao", vendaModel.Codigo_Produto);
-            return View(vendaModel);
+            var resProd = _contextProd.GetAll();
+            ViewData["Codigo_Produto"] = new SelectList(resProd, "Codigo", "Descricao", res.Codigo_Produto);
+            return View(res);
         }
 
         // POST: Venda/Edit/5
@@ -91,70 +78,48 @@ namespace MVC_Project.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, VendaModel vendaModel)
+        public IActionResult Edit(Guid id, VendaModel vendaModel)
         {
-            if (id != vendaModel.Codigo)
-            {
-                return NotFound();
-            }
+            var resProd = _contextProd.GetAll();
+            var res = _context.GetOne(id);
 
-            if (ModelState.IsValid)
+            if (res != null)
             {
-                try
-                {
-                    _context.Update(vendaModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!VendaModelExists(vendaModel.Codigo))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(id, vendaModel);               
+                return RedirectToAction(nameof(Index));               
             }
-            ViewData["Codigo_Produto"] = new SelectList(_context.Produtos, "Codigo", "Descricao", vendaModel.Codigo_Produto);
-            return View(vendaModel);
+            ViewData["Codigo_Produto"] = new SelectList(resProd, "Codigo", "Descricao", vendaModel.Codigo_Produto);
+
+            return View(res);
         }
 
         // GET: Venda/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public IActionResult Delete(Guid id)
         {
-            if (id == null)
+            var res = _context.GetOne(id);
+            if (res == null)
             {
                 return NotFound();
             }
 
-            var vendaModel = await _context.Vendas
-                .Include(v => v.Produto)
-                .FirstOrDefaultAsync(m => m.Codigo == id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
-
-            return View(vendaModel);
+            return View(res);
         }
 
         // POST: Venda/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public IActionResult DeleteConfirmed(Guid id)
         {
-            var vendaModel = await _context.Vendas.FindAsync(id);
-            _context.Vendas.Remove(vendaModel);
-            await _context.SaveChangesAsync();
+            _context.Delet(id);
             return RedirectToAction(nameof(Index));
         }
 
         private bool VendaModelExists(Guid id)
         {
-            return _context.Vendas.Any(e => e.Codigo == id);
+            var res = _context.GetOne(id);
+            if (res != null)
+                return true;
+            return false;
         }
     }
 }

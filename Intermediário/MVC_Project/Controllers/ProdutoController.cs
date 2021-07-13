@@ -69,13 +69,11 @@ namespace MVC_Project.Controllers
         public IActionResult Edit(Guid id, ProdutoModel produtoModel)
         {
             var res = _service.GetOne(id);
-            if (res != null)
+            if (res.GetType() != null)
             {
                 _service.Update(id, produtoModel);
                 return RedirectToAction(nameof(Index));
             }
-
-
             return View(res);
         }
 

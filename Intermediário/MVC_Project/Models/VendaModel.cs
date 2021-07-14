@@ -12,10 +12,5 @@ namespace MVC_Project.Models
         [ForeignKey("Produto")]
         public Guid Codigo_Produto { get; set; }
         public ProdutoModel Produto { get; set; }
-        public int RedusProduto()
-        {
-            var a = this.Produto.Estoque -= this.Quantidade;
-            return a;
-        }
     }
 }

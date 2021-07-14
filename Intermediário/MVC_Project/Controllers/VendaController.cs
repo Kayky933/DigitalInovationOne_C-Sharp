@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using MVC_Project.Data;
 using MVC_Project.Interfaces.Service;
 using MVC_Project.Models;
 using System;
@@ -11,12 +10,10 @@ namespace MVC_Project.Controllers
     {
         private readonly IVendaService _context;
         private readonly IProdutoService _contextProd;
-        private readonly MVC_ProjectContext _contextProject;
 
-        public VendaController(IVendaService context, IProdutoService contextProd, MVC_ProjectContext contextProject)
+        public VendaController(IVendaService context, IProdutoService contextProd)
         {
             _context = context;
-            _contextProject = contextProject;
             _contextProd = contextProd;
         }
 
@@ -29,9 +26,9 @@ namespace MVC_Project.Controllers
         // GET: Venda/Details/5
         public IActionResult Details(Guid id)
         {
-            var res = _context.GetOne(id);
-            if (res != null)
-                return View(res);
+            var response = _context.GetOne(id);
+            if (response != null)
+                return View(response);
 
             return NotFound();
         }
@@ -39,8 +36,8 @@ namespace MVC_Project.Controllers
         // GET: Venda/Create
         public IActionResult Create()
         {
-            var res = _contextProd.GetAll();
-            ViewData["Codigo_Produto"] = new SelectList(res, "Codigo", "Descricao");
+            var response = _contextProd.GetAll();
+            ViewData["Codigo_Produto"] = new SelectList(response, "Codigo", "Descricao");
             return View();
         }
 
@@ -51,26 +48,27 @@ namespace MVC_Project.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(VendaModel vendaModel)
         {
-            if (ModelState.IsValid)
+            var response = _context.Create(vendaModel);
+            if (response != null)
             {
-                _context.Create(vendaModel);
                 return RedirectToAction(nameof(Index));
             }
-            var res = _contextProd.GetAll();
-            ViewData["Codigo_Produto"] = new SelectList(res, "Codigo", "Descricao", vendaModel.Codigo_Produto);
+            var responseProd = _contextProd.GetAll();
+            ViewData["Codigo_Produto"] = new SelectList(responseProd, "Codigo", "Descricao", vendaModel.Codigo_Produto);
+            ViewBag.EstoqueSemProd = $"Esse produto não tem {vendaModel.Quantidade} unidades disponíveis";
             return View(vendaModel);
         }
 
         // GET: Venda/Edit/5
         public IActionResult Edit(Guid id)
         {
-            var res = _context.GetOne(id);
-            if (res == null)
+            var response = _context.GetOne(id);
+            if (response == null)
                 return NotFound();
 
-            var resProd = _contextProd.GetAll();
-            ViewData["Codigo_Produto"] = new SelectList(resProd, "Codigo", "Descricao", res.Codigo_Produto);
-            return View(res);
+            var responseProd = _contextProd.GetAll();
+            ViewData["Codigo_Produto"] = new SelectList(responseProd, "Codigo", "Descricao", response.Codigo_Produto);
+            return View(response);
         }
 
         // POST: Venda/Edit/5
@@ -80,29 +78,27 @@ namespace MVC_Project.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, VendaModel vendaModel)
         {
-            var resProd = _contextProd.GetAll();
-            var res = _context.GetOne(id);
+            var responseProd = _contextProd.GetAll();
+            var response = _context.Update(id, vendaModel);
 
-            if (res != null)
-            {
-                _context.Update(id, vendaModel);               
-                return RedirectToAction(nameof(Index));               
-            }
-            ViewData["Codigo_Produto"] = new SelectList(resProd, "Codigo", "Descricao", vendaModel.Codigo_Produto);
+            if (response != null)
+                return RedirectToAction(nameof(Index));
 
-            return View(res);
+            ViewData["Codigo_Produto"] = new SelectList(responseProd, "Codigo", "Descricao", vendaModel.Codigo_Produto);
+            ViewBag.EstoqueSemProd = $"Esse produto não tem {vendaModel.Quantidade} unidades disponíveis";
+            return View(response);
         }
 
         // GET: Venda/Delete/5
         public IActionResult Delete(Guid id)
         {
-            var res = _context.GetOne(id);
-            if (res == null)
+            var response = _context.GetOne(id);
+            if (response == null)
             {
                 return NotFound();
             }
 
-            return View(res);
+            return View(response);
         }
 
         // POST: Venda/Delete/5
@@ -116,8 +112,8 @@ namespace MVC_Project.Controllers
 
         private bool VendaModelExists(Guid id)
         {
-            var res = _context.GetOne(id);
-            if (res != null)
+            var response = _context.GetOne(id);
+            if (response != null)
                 return true;
             return false;
         }

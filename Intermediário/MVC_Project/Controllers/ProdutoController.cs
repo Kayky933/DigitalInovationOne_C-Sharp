@@ -23,9 +23,9 @@ namespace MVC_Project.Controllers
         // GET: Produto/Details/5
         public IActionResult Details(Guid id)
         {
-            var res = _service.GetOne(id);
-            if (res != null)
-                return View(res);
+            var response = _service.GetOne(id);
+            if (response != null)
+                return View(response);
 
             return NotFound();
         }
@@ -54,9 +54,9 @@ namespace MVC_Project.Controllers
         // GET: Produto/Edit/5
         public IActionResult Edit(Guid id)
         {
-            var res = _service.GetOne(id);
-            if (res != null)
-                return View(res);
+            var response = _service.GetOne(id);
+            if (response != null)
+                return View(response);
 
             return NotFound();
         }
@@ -68,21 +68,21 @@ namespace MVC_Project.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(Guid id, ProdutoModel produtoModel)
         {
-            var res = _service.GetOne(id);
-            if (res.GetType() != null)
+            var response = _service.GetOne(id);
+            if (response.GetType() != null)
             {
                 _service.Update(id, produtoModel);
                 return RedirectToAction(nameof(Index));
             }
-            return View(res);
+            return View(response);
         }
 
         // GET: Produto/Delete/5
         public IActionResult Delete(Guid id)
         {
-            var res = _service.GetOne(id);
-            if (res != null)
-                return View(res);
+            var response = _service.GetOne(id);
+            if (response != null)
+                return View(response);
             return NotFound();
         }
 
@@ -97,8 +97,8 @@ namespace MVC_Project.Controllers
 
         private bool ProdutoModelExists(Guid id)
         {
-            var res = _service.GetOne(id);
-            if (res.GetType() == typeof(ProdutoModel))
+            var response = _service.GetOne(id);
+            if (response.GetType() == typeof(ProdutoModel))
                 return true;
             return false;
 

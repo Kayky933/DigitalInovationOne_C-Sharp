@@ -41,8 +41,8 @@ namespace MVC_Project.Service
             var res = _repository.GetOne(id);
             if (res != null)
             {
-               var convertedClass =  ClassConverter(model);
-              
+                var convertedClass = ClassConverter(model);
+
                 _repository.Update(convertedClass);
                 return res;
             }

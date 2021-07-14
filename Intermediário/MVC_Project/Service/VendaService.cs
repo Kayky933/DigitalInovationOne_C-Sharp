@@ -9,20 +9,26 @@ namespace MVC_Project.Service
     public class VendaService : IVendaService
     {
         private readonly IVendaRepository _repository;
-        public VendaService(IVendaRepository repository)
+        private readonly IProdutoRepository _produtoRepository;
+        public VendaService(IVendaRepository repository, IProdutoRepository produtoRepository)
         {
             _repository = repository;
+            _produtoRepository = produtoRepository;
         }
         public object Create(VendaModel model)
         {
+            var estoque = _produtoRepository.GetOne(model.Codigo_Produto);
+            var quantidadeEstoque = estoque.Estoque -= model.Quantidade;
+            if (quantidadeEstoque <= 0)
+                return null;
             _repository.Create(model);
             return model;
         }
 
         public bool Delet(Guid model)
         {
-            var res = _repository.GetOne(model);
-            _repository.Delet(res);
+            var response = _repository.GetOne(model);
+            _repository.Delet(response);
             return true;
         }
 
@@ -38,14 +44,25 @@ namespace MVC_Project.Service
 
         public object Update(Guid id, VendaModel model)
         {
-            var res = _repository.GetOne(id);
-            if (res != null)
-            {
-                _repository.Update(model);
-                return res;
-            }
-            return null;
+            var response = _repository.GetOne(id);
 
+            var estoque = _produtoRepository.GetOne(model.Codigo_Produto);
+            var quantidadeEstoque = estoque.Estoque -= model.Quantidade;
+            if (quantidadeEstoque <= 0)
+                return null;
+
+            var convertedClass = ClassConverter(model);
+
+            _repository.Update(convertedClass);
+            return response;
+
+
+        }
+        private VendaModel ClassConverter(VendaModel vend)
+        {
+            var venda = _repository.GetOne(vend.Codigo);
+            venda.Quantidade = vend.Quantidade;
+            return venda;
         }
     }
 }

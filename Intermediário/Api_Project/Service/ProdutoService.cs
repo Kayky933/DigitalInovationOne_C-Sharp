@@ -50,12 +50,13 @@ namespace Api_Project.Service
 
         public ProdutoModel Update(Guid codigo, ProdutoModel model)
         {
+
             var response = _repository.GetOne(codigo);
             if (response == null)
                 return null;
+
             _repository.Update(model);
             return model;
-
-        }       
+        }
     }
 }

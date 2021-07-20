@@ -1,5 +1,4 @@
 ﻿using Api_Project.Contracts;
-using Api_Project.ExtensionMethods;
 using Api_Project.Interfaces.Service;
 using Api_Project.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -57,7 +56,7 @@ namespace Api_Project.Controllers
         [HttpPost]
         public ActionResult<ProdutoModelAdd> PostProdutoModel(ProdutoModelAdd produtoModel)
         {
-            
+
             var response = _service.Create(produtoModel);
             if (response != null)
                 return Ok(response);

@@ -1,11 +1,9 @@
-﻿using Api_Project.Data;
+﻿using Api_Project.Contracts;
+using Api_Project.Interfaces.Service;
 using Api_Project.Models;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api_Project.Controllers
 {
@@ -13,95 +11,52 @@ namespace Api_Project.Controllers
     [ApiController]
     public class VendaController : ControllerBase
     {
-        private readonly Api_ProjectContext _context;
+        private readonly IVendaService _context;
 
-        public VendaController(Api_ProjectContext context)
+        public VendaController(IVendaService context)
         {
             _context = context;
         }
 
         // GET: api/Venda
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VendaModel>>> GetVendaModel()
+        public ActionResult<IEnumerable<VendaModel>> GetVendaModel()
         {
-            return await _context.VendaModel.ToListAsync();
+            return Ok(_context.GetAll());
         }
 
         // GET: api/Venda/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<VendaModel>> GetVendaModel(Guid id)
+        public ActionResult<VendaModel> GetVendaModel(Guid id)
         {
-            var vendaModel = await _context.VendaModel.FindAsync(id);
-
-            if (vendaModel == null)
-            {
+            var response = _context.GetOne(id);
+            if (response == null)
                 return NotFound();
-            }
 
-            return vendaModel;
-        }
-
-        // PUT: api/Venda/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutVendaModel(Guid id, VendaModel vendaModel)
-        {
-            if (id != vendaModel.Codigo)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(vendaModel).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!VendaModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return response;
         }
 
         // POST: api/Venda
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<VendaModel>> PostVendaModel(VendaModel vendaModel)
+        public ActionResult<VendaModelAdd> PostVendaModel(VendaModelAdd vendaModel)
         {
-            _context.VendaModel.Add(vendaModel);
-            await _context.SaveChangesAsync();
+            var response = _context.Create(vendaModel);
+            if (response == null)
+                return BadRequest();
 
-            return CreatedAtAction("GetVendaModel", new { id = vendaModel.Codigo }, vendaModel);
+            return Ok(response);
         }
 
         // DELETE: api/Venda/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteVendaModel(Guid id)
+        public IActionResult DeleteVendaModel(Guid id)
         {
-            var vendaModel = await _context.VendaModel.FindAsync(id);
-            if (vendaModel == null)
-            {
-                return NotFound();
-            }
+            var reponse = _context.Delet(id);
+            if (reponse == false)
+                return BadRequest();
 
-            _context.VendaModel.Remove(vendaModel);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        private bool VendaModelExists(Guid id)
-        {
-            return _context.VendaModel.Any(e => e.Codigo == id);
+            return Ok();
         }
     }
 }

@@ -1,9 +1,5 @@
 ﻿using Api_Project.Contracts;
 using Api_Project.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api_Project.ExtensionMethods
 {
@@ -16,6 +12,14 @@ namespace Api_Project.ExtensionMethods
             produto.Estoque = prod.Estoque;
             produto.Valor = prod.Valor;
             return produto;
+        }
+
+        public static VendaModel ConvertToVenda(this VendaModelAdd prod)
+        {
+            VendaModel venda = new();
+            venda.Codigo_Produto = prod.Codigo_Produto;
+            venda.Quantidade = prod.Quantidade;
+            return venda;
         }
     }
 }

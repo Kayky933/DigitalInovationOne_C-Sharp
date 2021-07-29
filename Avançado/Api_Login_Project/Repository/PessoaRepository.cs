@@ -1,0 +1,49 @@
+﻿using Api_Login_Project.Data;
+using Api_Login_Project.Interfaces.Repository;
+using Api_Login_Project.Models;
+using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+
+namespace Api_Login_Project.Repository
+{
+    public class PessoaRepository : IPessoaRepository
+    {
+        private readonly Api_Login_ProjectContext _context;
+        public PessoaRepository(Api_Login_ProjectContext context)
+        {
+            _context = context;
+        }
+
+        public void Create(PessoaModel model)
+        {
+            _context.PessoaModel.Add(model);
+            Save();
+        }
+
+        public void Delet(PessoaModel model)
+        {
+            _context.PessoaModel.Remove(model);
+            Save();
+        }
+
+        public IEnumerable<PessoaModel> GetAll()
+        {
+            return _context.PessoaModel.ToList();
+        }
+
+        public PessoaModel GetByEmail(string email)
+        {
+            return _context.PessoaModel.Include(a => a.Email).FirstOrDefault(a => a.Email == email);
+        }
+
+        public PessoaModel GetOne(int id)
+        {
+            return _context.PessoaModel.Find(id);
+        }
+        private void Save()
+        {
+            _context.SaveChanges();
+        }
+    }
+}

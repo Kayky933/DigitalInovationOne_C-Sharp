@@ -34,7 +34,12 @@ namespace Api_Login_Project.Repository
 
         public PessoaModel GetByEmail(string email)
         {
-            return _context.PessoaModel.Include(a => a.Email).FirstOrDefault(a => a.Email == email);
+            return _context.PessoaModel.Where(a => a.Email == email).FirstOrDefault();
+        }
+
+        public PessoaModel GetBySenha(string senha)
+        {
+            return _context.PessoaModel.Where(a => a.Senha == senha).FirstOrDefault(a => a.Senha == senha);
         }
 
         public PessoaModel GetOne(int id)

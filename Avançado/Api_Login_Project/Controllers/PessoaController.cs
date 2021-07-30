@@ -1,4 +1,5 @@
 ﻿using Api_Login_Project.Contracts;
+using Api_Login_Project.Filter;
 using Api_Login_Project.Interfaces.Service;
 using Api_Login_Project.Models;
 using Microsoft.AspNetCore.Mvc;
@@ -26,6 +27,7 @@ namespace Api_Login_Project.Controllers
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [Route("Registrar")]
         [HttpPost]
+        [ValidationModel]
         public ActionResult<PessoaModelContract> PostPessoaModel(PessoaModelContract pessoaModel)
         {
             var response = _service.Create(pessoaModel);
@@ -33,6 +35,7 @@ namespace Api_Login_Project.Controllers
                 return BadRequest();
             return Ok(response);
         }
+      
         // DELETE: api/Pessoa/5
         [HttpDelete("{id}")]
         public IActionResult DeletePessoaModel(int id)

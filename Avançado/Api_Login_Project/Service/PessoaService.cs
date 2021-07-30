@@ -52,5 +52,7 @@ namespace Api_Login_Project.Service
         {
             return _repository.GetOne(id);
         }
+
+       
     }
 }

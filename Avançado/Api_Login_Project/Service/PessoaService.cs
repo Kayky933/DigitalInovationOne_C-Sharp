@@ -53,6 +53,13 @@ namespace Api_Login_Project.Service
             return _repository.GetOne(id);
         }
 
-       
+        public PessoaModelContract Login(PessoaModelContract model)
+        {
+            var pessoa = model.ConvertPessoa();
+             var response= _repository.Login(pessoa);
+            if (response == null)
+                return null;
+            return model;
+        }
     }
 }

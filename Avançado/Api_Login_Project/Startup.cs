@@ -3,13 +3,18 @@ using Api_Login_Project.Interfaces.Repository;
 using Api_Login_Project.Interfaces.Service;
 using Api_Login_Project.Repository;
 using Api_Login_Project.Service;
+using Api_Login_Project.StartUpConfig;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System;
+using System.Text;
 
 namespace Api_Login_Project
 {
@@ -31,11 +36,30 @@ namespace Api_Login_Project
                 {
                     options.SuppressModelStateInvalidFilter = true;
                 });
+            ConfigurationStart.CorsConfiguration(services);
+          
+            ConfigurationStart.SwaggerConfig(services);
 
-            services.AddSwaggerGen(c =>
+            var secret = Encoding.ASCII.GetBytes(Configuration.GetSection("JwtConfigurations:Secret").Value);
+            services.AddAuthentication(x =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "Api_Login_Project", Version = "v1" });
-            });
+                x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+            })
+                .AddJwtBearer(x =>
+                {
+                    x.RequireHttpsMetadata = false;
+                    x.SaveToken = true;
+                    x.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(secret),
+                        ValidateIssuer = false,
+                        ValidateAudience = false
+
+                    };
+                });
+
 
             services.AddDbContext<Api_Login_ProjectContext>(options =>
                     options.UseSqlServer(Configuration.GetConnectionString("Api_Login_ProjectContext")));
@@ -55,9 +79,10 @@ namespace Api_Login_Project
             }
 
             app.UseHttpsRedirection();
-
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseRouting();
-
+            app.UseCors("AllowAllOrigins");
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

@@ -19,6 +19,10 @@ namespace Api_Login_Project.Repository
         {
             _context.PessoaModel.Add(model);
             Save();
+        }        
+        public PessoaModel Login(PessoaModel model)
+        {
+            return _context.PessoaModel.Where(a => a.Email == model.Email && a.Senha == model.Senha).FirstOrDefault();
         }
 
         public void Delet(PessoaModel model)
